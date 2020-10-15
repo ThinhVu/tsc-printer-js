@@ -1,0 +1,30 @@
+const usb = require('usb');
+const deviceList = usb.getDeviceList();
+const DataForSendToPrinterTSC = require('./DataForSendToPrinterTSC')
+const XPrinter = require('./XPrinter')
+const xPrinterDev = new XPrinter(deviceList[0])
+
+console.log(`Found ${deviceList.length} device list`);
+
+const printText = () => {
+  let data = Buffer.concat([
+    DataForSendToPrinterTSC.sizeBydot(480, 240),
+    DataForSendToPrinterTSC.cls(),
+    DataForSendToPrinterTSC.text(50, 10, "1", 0, 2, 2, "Thinh Vu 123"),
+    DataForSendToPrinterTSC.print(1),
+  ])
+  xPrinterDev.Write(data)
+}
+
+const printBarcode = () => {
+  [
+    DataForSendToPrinterTSC.sizeBymm(60,30),
+    DataForSendToPrinterTSC.gapBymm(0,0),
+    DataForSendToPrinterTSC.cls(),
+    DataForSendToPrinterTSC.barCode(60,50,"128",100,1,0,2,2,"Hello there"),
+    DataForSendToPrinterTSC.print(1)
+  ].forEach(data => xPrinterDev.Write(data));
+}
+
+printText()
+printBarcode()
