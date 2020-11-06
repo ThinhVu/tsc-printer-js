@@ -71,20 +71,80 @@ const disPlay = s => strToBytes("DISPLAY " + s + "\n")
 const initialPrinter = () => strToBytes("INITIALPRINTER\n")
 const bar = (x, y, width, heigth) => strToBytes("BAR " + x + "," + y + "," + width + "," + heigth + "\n")
 const barCode = (x, y, codeType, heigth, human, rotation, narrow, wide, content) => strToBytes("BARCODE " + x + "," + y + ",\"" + codeType + "\"," + heigth + "," + human + "," + rotation + "," + narrow + "," + wide + ",\"" + content + "\"\n")
-// TODO: bitmap
-const bitmap = (x, y, mode, /*Bitmap*/ bitmap, /*BmpType*/ bmpType) => {
-  throw 'Not implemented';
-  // int width = (bitmap.getWidth() + 7) / 8;
-  // int heigth = bitmap.getHeight();
-  // String str = "BITMAP " + x + "," + y + "," + width + "," + heigth + "," + mode + ",";
-  // String end = "\n";
-  // byte[] ended = strTobytes(end);
-  // byte[] head = strTobytes(str);
-  // byte[] data = BitmapToByteData.downLoadBmpToSendTSCData(bitmap, bmpType);
-  // data = byteMerger(head, data);
-  // data = byteMerger(data, ended);
-  // return data;
+
+// bitmap
+function getTscBitmapData(bitmap) {
+  /**
+   * Convert bitmap image to tsc packed format
+   * @param bitmap
+   */
+  const w = bitmap.width;
+  const h = bitmap.height;
+  const threshold = 80;
+  const biTonal = [];
+  for(let y = 0; y < h; ++y)
+    for (let x = 0; x < w; ++x)
+      biTonal[y * w + x] = getGrayscaleAt(bitmap, x, y) >= threshold ? 1 : 0;
+  return pack(biTonal, w, h);
 }
+function getGrayscaleAt(bitmap, x, y) {
+  /**
+   * https://en.wikipedia.org/wiki/Grayscale
+   * Luma coding: Y'=0.299R'+0.587G'+0.114B'
+   * Suppose that:
+   *   1. alpha channel is always 255
+   *   2. perpixel contains 4 bytes: RGBA
+   */
+  const w = bitmap.width;
+  const bpp = 4
+  const pixelPos = (y * w + x) * bpp;
+  const r = bitmap.data[pixelPos];
+  const g = bitmap.data[pixelPos + 1];
+  const b = bitmap.data[pixelPos + 2];
+  return (0.299 * r + 0.587 * g + 0.114 * b);
+}
+function pack(b, w, h) {
+  /**
+   * To reduce data transmit, TSC printer will pack data before send
+   * 8 byte of data will be packed into a byte
+   * @param b data bitmap data with value 0 and 1
+   * @param w width image witdh
+   * @param h height image height
+   */
+  let n = Math.floor((w + 7) / 8);
+  let data = new Array(n * h);
+  for(let y = 0; y < h; ++y) {
+    for(let x = 0; x < n * 8; ++x) {
+      if (x < w) {
+        if (b[y * w + x]) {
+          data[y * n + Math.floor(x / 8)] |= byte(1 << 7 - x % 8);
+        }
+      } else if (x >= w) {
+        data[y * n + Math.floor(x / 8)] |= byte(1 << 7 - x % 8);
+      }
+    }
+  }
+
+  return data;
+}
+function byte(value) {
+  /**
+   * maximum of (1 << 7 - x % 8) is (1 << 7) = 128 where x % 8 == 0
+   * 128 in int is -128 in byte
+   * another x which x % 8 != will have (1 << 7 - x % 8) < 127 so it's keep the same value in both byte and int
+   */
+  return value === 128 ? -128: value
+}
+function bitmap(x, y, bitmap) {
+  const width = (bitmap.width + 7) / 8;
+  const heigth = bitmap.height;
+  const str = "BITMAP " + x + "," + y + "," + width + "," + heigth + "," + 0 + ",";
+  const ended = DataForSendToPrinterTSC.strToBytes("\n");
+  const head = DataForSendToPrinterTSC.strToBytes(str);
+  const data = Buffer.from(getTscBitmapData(bitmap));
+  return Buffer.concat([head, data, ended]);
+}
+
 const box = (x, y, x_end, y_end, thickness) => strToBytes("BOX " + x + "," + y + "," + x_end + "," + y_end + "," + thickness + "\n")
 const ellipse = (x, y, width, height, thickness) => strToBytes("ELLIPSE " + x + "," + y + "," + width + "," + height + "," + thickness + "\n")
 const codeBlockFMode = (x, y, rotation, row_height, module_width, content) => strToBytes("CODABLOCK " + x + "," + y + "," + rotation + "," + row_height + "," + module_width + ",\"" + content + "\"\n")

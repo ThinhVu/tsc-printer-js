@@ -1,6 +1,6 @@
 {
   "name": "xp-243b",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "jimp": "^0.16.1",
     "lodash": "^4.17.20",
     "queue": "^6.0.1",
     "usb": "^1.6.3"
