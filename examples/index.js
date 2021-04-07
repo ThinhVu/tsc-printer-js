@@ -1,31 +1,32 @@
 const usb = require('usb');
-const deviceList = usb.getDeviceList();
-const DataForSendToPrinterTSC = require('./DataForSendToPrinterTSC')
-const XPrinter = require('./XPrinter')
-const xPrinterDev = new XPrinter(deviceList[0])
-const Jimp = require('jimp')
+const Jimp = require('jimp');
+const DataForSendToPrinterTSC = require('../src/DataForSendToPrinterTSC')
+const XPrinter = require('../src/XPrinter')
 
+const deviceList = usb.getDeviceList();
 console.log(`Found ${deviceList.length} device list`);
 
+const xPrinterDev = new XPrinter(deviceList[0])
+
 const printImage = async () => {
-  const imgPath = './3 2.jpg';
+  const imgPath = '../assets/2.jpg';
   const img = await Jimp.read(imgPath);
   const buffer = await DataForSendToPrinterTSC.bitmap(0, 0, img.bitmap)
-  xPrinterDev.Write(Buffer.concat([
+  await xPrinterDev.Write(Buffer.concat([
     DataForSendToPrinterTSC.cls(),
     buffer,
     DataForSendToPrinterTSC.print(1)
   ]));
 }
 
-const printText = () => {
+const printText = async () => {
   let data = Buffer.concat([
     DataForSendToPrinterTSC.sizeBydot(480, 240),
     DataForSendToPrinterTSC.cls(),
     DataForSendToPrinterTSC.text(50, 10, "1", 0, 2, 2, "Thinh Vu 123"),
     DataForSendToPrinterTSC.print(1),
   ])
-  xPrinterDev.Write(data)
+  await xPrinterDev.Write(data)
 }
 
 const printBarcode = () => {
