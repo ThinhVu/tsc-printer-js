@@ -1,11 +1,5 @@
-# XPrinterTSC
 ## Introduction
-XPrinter TSC for node js
+TSC printer for node js<br/>
 
-Tested on XP-243B and worked!
-https://www.xprintertech.com/xp-243b-1
-
-### Roadmap:
-- Implement 'not implemented' functions 
-- Support GBK charset
-- Test for Android/iOS
+### References
+http://www.kroyeuropedownload.com/English_User_Manuals/TSPL_TSPL2_Programming_Jan_2017.pdf# XPrinterTSC
