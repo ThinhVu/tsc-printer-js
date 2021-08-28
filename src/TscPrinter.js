@@ -1,6 +1,4 @@
-const _ = require('lodash')
-
-class XPrinter {
+class TscPrinter {
   constructor(device) {
     this.device = device
   }
@@ -25,14 +23,15 @@ class XPrinter {
           try {
             iface.detachKernelDriver();
           } catch (e) {
-            console.error("[ERROR] Could not detatch kernel driver: %s", e)
+            console.error("[ERROR] Could not detach kernel driver: %s", e)
           }
         }
       }
 
       iface.claim();
-      let outEndpoint = _.find(iface.endpoints, {direction: 'out'});
-      let inEndpoint = _.find(iface.endpoints, {direction: 'in'});
+
+      let outEndpoint = iface.endpoints.find(endpoint => endpoint.direction === 'out');
+      let inEndpoint = iface.endpoints.find(endpoint => endpoint.direction === 'in');
 
       let finish = false;
       let transfered = false;
@@ -95,4 +94,4 @@ class XPrinter {
   }
 }
 
-module.exports = XPrinter
+module.exports = TscPrinter
