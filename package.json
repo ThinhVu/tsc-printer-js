@@ -1,13 +1,19 @@
 {
   "name": "tsc-printer-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tsc Printer implement for nodejs",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "ThinhVu",
-  "url": "https://github.com/ThinhVu/tsc-printer-js",
+  "author": {
+    "name": "Thinh Vu",
+    "email": "vutrongthinhk7@gmail.com",
+    "url": "https://github.com/ThinhVu"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThinhVu/tsc-printer-js.git"
+  },
   "license": "WTFPL",
   "dependencies": {
   },
@@ -15,5 +21,6 @@
     "queue": "^6.0.1",
     "usb": "^1.6.3",
     "jimp": "^0.16.1"
-  }
+  },
+  "keywords": ["tsc", "printer", "nodejs", "tspl", "tspl2"]
 }
