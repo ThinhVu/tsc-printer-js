@@ -14,7 +14,7 @@
     "type": "git",
     "url": "https://github.com/ThinhVu/tsc-printer-js.git"
   },
-  "license": "WTFPL",
+  "license": "WTFPL v3",
   "dependencies": {
   },
   "devDependencies": {
