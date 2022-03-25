@@ -198,6 +198,9 @@ const reverse = (x, y, width, height) => strToBytes("REVERSE " + x + "," + y + "
 const text = (x, y, font, rotation, x_multiplication, y_multiplication, content) => {
   return strToBytes("TEXT " + x + "," + y + ",\"" + font + "\"," + rotation + "," + x_multiplication + "," + y_multiplication + ",\"" + content + "\"\n")
 }
+const text2 = (x, y, font, rotation, x_multiplication, y_multiplication, alignment, content) => {
+  return strToBytes("TEXT " + x + "," + y + ",\"" + font + "\"," + rotation + "," + x_multiplication + "," + y_multiplication + "," + alignment + ",\"" + content + "\"\n")
+}
 const block11 = (x, y, width, height, font, rotation, x_multiplication, y_multiplication, space, alignment, content) => {
   return strToBytes("BLOCK " + x + "," + y + "," + width + "," + height + ",\"" + font + "\"," + rotation + "," + x_multiplication + "," + y_multiplication + "," + space + "," + alignment + ",\"" + content + "\"\n")
 }
