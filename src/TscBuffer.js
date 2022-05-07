@@ -145,8 +145,8 @@ function bitmap(x, y, bitmap) {
   const width = (bitmap.width + 7) / 8;
   const heigth = bitmap.height;
   const str = "BITMAP " + x + "," + y + "," + width + "," + heigth + "," + 0 + ",";
-  const ended = DataForSendToPrinterTSC.strToBytes("\n");
-  const head = DataForSendToPrinterTSC.strToBytes(str);
+  const ended = strToBytes("\n");
+  const head = strToBytes(str);
   const data = Buffer.from(getTscBitmapData(bitmap));
   return Buffer.concat([head, data, ended]);
 }
